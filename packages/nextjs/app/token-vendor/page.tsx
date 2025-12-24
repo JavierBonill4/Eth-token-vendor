@@ -5,16 +5,19 @@ import type { NextPage } from "next";
 import { formatEther } from "viem";
 import { useAccount } from "wagmi";
 import { AddressInput, IntegerInput } from "~~/components/scaffold-eth";
-import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { useWatchBalance } from "~~/hooks/scaffold-eth/useWatchBalance";
+// import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+// switch to top one once useDeployed needs to be used
+// import { useWatchBalance } from "~~/hooks/scaffold-eth/useWatchBalance"; unused as of now
 import { getTokenPrice, multiplyTo1e18 } from "~~/utils/scaffold-eth/priceInWei";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
   const [tokensToSend, setTokensToSend] = useState("");
   const [tokensToBuy, setTokensToBuy] = useState<string | bigint>("");
-  const [isApproved, setIsApproved] = useState(false);
-  const [tokensToSell, setTokensToSell] = useState<string>("");
+  // Temp comment so I can commit
+  // const [isApproved, setIsApproved] = useState(false);
+  // const [tokensToSell, setTokensToSell] = useState<string>("");
 
   const { address } = useAccount();
   const { data: yourTokenSymbol } = useScaffoldReadContract({
@@ -28,10 +31,10 @@ const TokenVendor: NextPage = () => {
     args: [address],
   });
 
-  const { data: vendorContractData } = useDeployedContractInfo({ contractName: "Vendor" });
+  // const { data: vendorContractData } = useDeployedContractInfo({ contractName: "Vendor" }); unused as of now
   const { writeContractAsync: writeVendorAsync } = useScaffoldWriteContract({ contractName: "Vendor" });
   const { writeContractAsync: writeYourTokenAsync } = useScaffoldWriteContract({ contractName: "YourToken" });
-
+  // temp comments so I can commit
   // const { data: vendorTokenBalance } = useScaffoldReadContract({
   //   contractName: "YourToken",
   //   functionName: "balanceOf",
@@ -40,10 +43,10 @@ const TokenVendor: NextPage = () => {
 
   // const { data: vendorEthBalance } = useWatchBalance({ address: vendorContractData?.address });
 
-  // const { data: tokensPerEth } = useScaffoldReadContract({
-  //   contractName: "Vendor",
-  //   functionName: "tokensPerEth",
-  // });
+  const { data: tokensPerEth } = useScaffoldReadContract({
+    contractName: "Vendor",
+    functionName: "tokensPerEth",
+  });
 
   return (
     <>
@@ -72,7 +75,7 @@ const TokenVendor: NextPage = () => {
         </div>
 
         {/* Buy Tokens */}
-        {/* <div className="flex flex-col items-center space-y-4 bg-base-100 shadow-lg shadow-secondary border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+        <div className="flex flex-col items-center space-y-4 bg-base-100 shadow-lg shadow-secondary border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
           <div className="text-xl">Buy tokens</div>
           <div>{tokensPerEth?.toString() || 0} tokens per ETH</div>
 
@@ -97,7 +100,7 @@ const TokenVendor: NextPage = () => {
           >
             Buy Tokens
           </button>
-        </div> */}
+        </div>
 
         {!!yourTokenBalance && (
           <div className="flex flex-col items-center space-y-4 bg-base-100 shadow-lg shadow-secondary border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
